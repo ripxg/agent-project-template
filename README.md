@@ -1,178 +1,78 @@
-# [PROJECT_NAME]
+# Agent Project Template
 
-> **AI-Ready Project Template** - Multi-agent collaboration enabled
+A simple template for working with AI agents on software projects.
 
 ---
 
-## Quick Start
+## Getting Started (3 Steps)
+
+### Step 1: Clone this template
 
 ```bash
-# Clone this template for new projects
-git clone [TEMPLATE_REPO_URL] my-new-project
-cd my-new-project
-
-# Update project name
-./scripts/setup-project.sh "My New Project"
-
-# Initialize git (if needed)
-git init
-git add .
-git commit -m "Initial commit from template"
+git clone [this-repo-url] my-project
+cd my-project
 ```
+
+### Step 2: Describe your idea
+
+Edit the `MY_IDEA.md` file and fill in the sections. Don't worry about being perfect - just describe what you want to build in plain language.
+
+### Step 3: Start your AI agent
+
+Open your preferred AI agent (Claude, Cursor, etc.) and point it to this project. Tell it:
+
+> "Read AGENTS.md and help me get started"
+
+The agent will:
+1. Ask you clarifying questions about your idea
+2. Create a proper project plan (PRD) from your description
+3. Break it down into actionable tasks
+4. Start working on implementation
 
 ---
 
-## AI Agent Collaboration
+## How It Works
 
-This project uses standardized multi-agent collaboration protocols.
+**For You (Human)**:
+- Write your idea in `MY_IDEA.md`
+- Review and approve what the agent proposes
+- The agent handles the technical structure
 
-### For AI Agents
-
-**Before starting work**, read these in order:
-1. **[AGENTS.md](./AGENTS.md)** - Universal Agent Standard (MANDATORY)
-2. **[docs/PROJECT_POLICY.md](./docs/PROJECT_POLICY.md)** - Project-specific rules
-3. **[docs/agents/config/[your-type].md](./docs/agents/config/)** - Your agent configuration
-
-**Quick checklist**:
-- [ ] Registered in [manifest](./docs/agents/manifest.md)
-- [ ] Checked for [handoffs](./docs/agents/handoffs/)
-- [ ] Know where to [log activity](./docs/agents/activity.md)
-- [ ] Understand [file locking](./docs/agents/locks.md)
-
-### For Humans
-
-**Managing AI work**:
-- **Manifest**: See who's working on what → `docs/agents/manifest.md`
-- **Activity**: Review what's been done → `docs/agents/activity.md`
-- **Handoffs**: Check work transfers → `docs/agents/handoffs/`
-- **Locks**: See file ownership → `docs/agents/locks.md`
-
-**Assigning work**:
-1. Create PBI in `docs/delivery/backlog.md`
-2. Break into tasks in `docs/delivery/[PBI-ID]/tasks.md`
-3. Let agents claim based on capability routing
+**For AI Agents**:
+- Read `AGENTS.md` for protocols
+- Detect if this is a new project (no `docs/delivery/` content)
+- Guide the human through PRD creation
+- Coordinate with other agents via `docs/agents/`
 
 ---
 
 ## Project Structure
 
 ```
-project-root/
-├── AGENTS.md                    # Universal Agent Standard
-├── README.md                    # This file
-├── docs/
-│   ├── PROJECT_POLICY.md       # Project-specific rules
-│   ├── IMPLEMENTATION_GUIDE.md # Setup and usage guide
-│   ├── agents/                 # Agent coordination
-│   │   ├── manifest.md        # Who's working
-│   │   ├── activity.md        # What's been done
-│   │   ├── locks.md           # File ownership
-│   │   ├── config/            # Agent configurations
-│   │   │   ├── claude.md
-│   │   │   └── cursor.md
-│   │   ├── handoffs/          # Work transfers
-│   │   │   └── _TEMPLATE.md
-│   │   └── archive/           # Old logs
-│   └── delivery/              # Your work
-│       └── backlog.md         # Product backlog
-├── scripts/
-│   ├── setup-project.sh       # Project initialization
-│   └── agent-helpers.sh       # Agent utilities
-└── .github/
-    └── workflows/
-        └── agent-checks.yml   # Automated checks
+my-project/
+├── README.md           # You are here
+├── MY_IDEA.md          # Your project description (edit this!)
+├── AGENTS.md           # Instructions for AI agents
+└── docs/
+    ├── agents/         # Agent coordination
+    │   ├── manifest.md # Who's working on what
+    │   ├── activity.md # Work log
+    │   └── handoffs/   # Work transfers between agents
+    └── delivery/       # Created by agents
+        └── backlog.md  # Product backlog
 ```
 
 ---
 
-## Getting Started
+## Multiple Agents
 
-### For New Projects
-
-1. **Set up project**:
-   ```bash
-   ./scripts/setup-project.sh "Your Project Name"
-   ```
-
-2. **Create first PBI**:
-   - Edit `docs/delivery/backlog.md`
-   - Add PBI with user story and acceptance criteria
-
-3. **Start first task**:
-   - Agent reads AGENTS.md
-   - Agent registers in manifest
-   - Agent claims task
-   - Work begins!
-
-### For Existing Projects
-
-See [docs/IMPLEMENTATION_GUIDE.md](./docs/IMPLEMENTATION_GUIDE.md) for integration steps.
+This template supports multiple AI agents working together:
+- Each agent registers in `docs/agents/manifest.md`
+- Agents hand off work via `docs/agents/handoffs/`
+- Activity is logged for transparency
 
 ---
 
-## Documentation
+## Questions?
 
-- **[AGENTS.md](./AGENTS.md)** - Universal collaboration rules
-- **[docs/PROJECT_POLICY.md](./docs/PROJECT_POLICY.md)** - Project workflow
-- **[docs/IMPLEMENTATION_GUIDE.md](./docs/IMPLEMENTATION_GUIDE.md)** - Setup guide
-- **[docs/agents/config/](./docs/agents/config/)** - Agent capabilities
-
----
-
-## Helper Scripts
-
-**Agent registration**:
-```bash
-source scripts/agent-helpers.sh
-agent_register claude "planning,research,docs"
-```
-
-**Activity logging**:
-```bash
-log_activity claude-20250111-1430 task-claimed PBI-1-1 "Starting architecture design"
-```
-
-**File locking**:
-```bash
-lock_file src/api/users.ts claude-20250111-1430 PBI-1-2 "Implementing user endpoints"
-unlock_file src/api/users.ts
-```
-
----
-
-## Maintenance
-
-**Daily**: Check manifest for stale sessions, review activity log  
-**Weekly**: Archive completed handoffs, check lock patterns  
-**Monthly**: Archive old activity logs, update templates  
-
-See [docs/IMPLEMENTATION_GUIDE.md](./docs/IMPLEMENTATION_GUIDE.md) for details.
-
----
-
-## Contributing
-
-1. Follow AGENTS.md protocols
-2. Document all work in activity log
-3. Create handoffs for task transfers
-4. Keep manifest current
-5. Release locks promptly
-
----
-
-## License
-
-[YOUR_LICENSE]
-
----
-
-## Support
-
-- **Issues**: Create GitHub issue
-- **Questions**: See [docs/IMPLEMENTATION_GUIDE.md](./docs/IMPLEMENTATION_GUIDE.md)
-- **Improvements**: Document in activity log, discuss with team
-
----
-
-**Template Version**: 1.0.0  
-**Last Updated**: [AUTO_GENERATED]
+Just ask your AI agent - it knows how to use this template!

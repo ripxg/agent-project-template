@@ -1,341 +1,236 @@
-# Universal Agent Standard (UAS)
+# Agent Instructions
 
-**Version**: 1.0.0  
-**Project**: [PROJECT_NAME]  
-**Last Updated**: [AUTO_GENERATED]
-
-> **For AI Agents**: This document defines mandatory protocols for multi-agent collaboration. Read completely before starting work.
+**For AI Agents**: Read this document completely when starting work on this project.
 
 ---
 
-## Quick Reference
+## First Things First: Is This a New Project?
 
-**Before ANY work**:
-- ✅ Register in `docs/agents/manifest.md`
-- ✅ Check for handoffs in `docs/agents/handoffs/`
-- ✅ Review `docs/PROJECT_POLICY.md` for project specifics
+**Check**: Does `docs/delivery/` contain any PRD or task files?
 
-**During work**:
-- ✅ Log significant actions in `docs/agents/activity.md`
-- ✅ Acquire file locks in `docs/agents/locks.md`
-- ✅ Update task ownership in task files
+### If NO (New Project) → Start Here
 
-**When complete**:
-- ✅ Create handoff if needed
-- ✅ Release all locks
-- ✅ Update manifest status
+This is a fresh project. Your first job is to help the human turn their idea into an actionable plan.
+
+**Step 1: Read the Human's Idea**
+- Open `MY_IDEA.md` at the project root
+- Understand what they want to build
+
+**Step 2: Ask Clarifying Questions**
+
+Before creating any plans, ask the human questions to fill gaps. Consider:
+
+- **Scope**: What's the minimum viable version? What can wait for later?
+- **Users**: Who specifically will use this? What's their skill level?
+- **Technical**: Any technology preferences or constraints?
+- **Integration**: Does this need to connect to other systems?
+- **Data**: What information does it need to store or process?
+- **Success**: How will they test if it's working?
+
+Ask 3-5 focused questions. Don't overwhelm them.
+
+**Step 3: Create the PRD**
+
+Once you have clarity, create the project structure:
+
+1. Create `docs/delivery/1/prd.md` with:
+   ```markdown
+   # PRD: [Project Name]
+
+   ## Overview
+   [Clear description of what this project does]
+
+   ## Problem Statement
+   [What problem it solves and for whom]
+
+   ## Goals
+   [What success looks like - measurable if possible]
+
+   ## Scope
+   ### In Scope (MVP)
+   - [Feature 1]
+   - [Feature 2]
+
+   ### Out of Scope (Future)
+   - [Deferred feature 1]
+
+   ## Technical Approach
+   [High-level architecture decisions]
+
+   ## Open Questions
+   [Anything still unresolved]
+   ```
+
+2. Create `docs/delivery/1/tasks.md`:
+   ```markdown
+   # Tasks for PRD 1
+
+   | ID | Task | Status | Description |
+   |----|------|--------|-------------|
+   | 1-1 | [Task name] | Proposed | [What needs to be done] |
+   | 1-2 | [Task name] | Proposed | [What needs to be done] |
+   ```
+
+3. Update `docs/delivery/backlog.md` with the PBI entry
+
+**Step 4: Get Human Approval**
+
+Present the PRD and task list to the human. Wait for their approval before implementing.
 
 ---
 
-## 1. Agent Registration (MANDATORY)
+### If YES (Existing Project) → Continue Work
 
-### Register Before First Action
+The project has an established structure. Follow these steps:
 
-```markdown
-# Edit docs/agents/manifest.md
-
-| [agent-type]-[YYYYMMDD]-[HHMM] | [type] | active | [timestamp] | none | [capabilities] |
-```
-
-**Example**:
-```markdown
-| claude-20250111-1430 | claude | active | 2025-01-11T14:30:00Z | none | planning,research,docs,web-search |
-```
-
-**Standard Agent Types**:
-- `claude` - Planning, research, architecture, documentation
-- `cursor` - Implementation, testing, debugging, refactoring
-- `copilot` - Code completion, suggestions
-
-### Session Management
-
-**Start**: Register → Log session start → Check handoffs  
-**Active**: Update manifest every 15min → Log actions → Maintain locks  
-**End**: Complete handoffs → Release locks → Set status offline
+1. **Register yourself** in `docs/agents/manifest.md`
+2. **Check for handoffs** in `docs/agents/handoffs/`
+3. **Review current work** in `docs/delivery/`
+4. **Claim a task** and start working
 
 ---
 
-## 2. Activity Logging (MANDATORY)
+## Agent Registration
 
-### Log All Significant Actions
+Before doing any work, register in `docs/agents/manifest.md`:
 
-**Location**: `docs/agents/activity.md`
-
-**Format**:
 ```markdown
-### [HH:MM:SS] - [agent-id]
-- **Action**: [action-type]
-- **Target**: [task/file/pbi]
-- **Details**: [description]
-- **Related**: [links]
+| Agent ID | Type | Status | Current Task | Last Active |
+|----------|------|--------|--------------|-------------|
+| claude-20250114-1430 | claude | active | 1-1 | 2025-01-14 14:30 |
 ```
 
-**Always Log**:
+**Agent ID format**: `[type]-[YYYYMMDD]-[HHMM]`
+
+**Update your status**:
+- When starting: `active`
+- When done for now: `idle`
+- When leaving: `offline`
+
+---
+
+## Working on Tasks
+
+### Claiming a Task
+
+1. Check `docs/delivery/[PBI]/tasks.md` for available tasks
+2. Verify no other agent owns it (check manifest)
+3. Update task status to `InProgress`
+4. Update your manifest entry with the task ID
+5. Log the claim in `docs/agents/activity.md`
+
+### Task Statuses
+
+| Status | Meaning |
+|--------|---------|
+| Proposed | Defined, needs human approval |
+| Agreed | Approved, ready to work on |
+| InProgress | Someone is actively working on it |
+| Review | Done, waiting for human to verify |
+| Done | Human approved it |
+| Blocked | Can't proceed, needs help |
+
+### Completing a Task
+
+1. Finish the work
+2. Update task status to `Review`
+3. Update manifest (set task to "none")
+4. Log completion in activity
+5. Wait for human approval → then mark `Done`
+
+---
+
+## Working with Multiple Agents
+
+### Handoffs
+
+When you need to pass work to another agent (or another agent type):
+
+1. Create `docs/agents/handoffs/[task]-to-[agent-type].md`:
+   ```markdown
+   # Handoff: [Task ID]
+
+   ## Context
+   [What this task is about]
+
+   ## What's Done
+   [Work completed so far]
+
+   ## What's Next
+   [Remaining work for receiving agent]
+
+   ## Important Notes
+   [Blockers, decisions made, gotchas]
+   ```
+
+2. Update task status to `ReadyForHandoff`
+3. Log the handoff in activity
+4. Update manifest (your task = none)
+
+### Receiving a Handoff
+
+1. Read the handoff document completely
+2. Claim the task (update manifest and task status)
+3. Log acceptance in activity
+4. Continue the work
+
+---
+
+## Activity Logging
+
+Log significant actions in `docs/agents/activity.md`:
+
+```markdown
+## 2025-01-14
+
+### 14:30 - claude-20250114-1430
+- **Action**: Claimed task 1-1
+- **Details**: Starting implementation of user authentication
+```
+
+**Log these events**:
 - Session start/end
-- Task claims/releases
-- Status changes
-- Handoffs
-- File modifications (bulk)
-- Conflicts
-- Blockers
+- Task claimed/completed
+- Handoffs created/accepted
+- Blockers encountered
+- Significant decisions
 
 ---
 
-## 3. Task Ownership (MANDATORY)
+## Key Principles
 
-### One Owner Per Task
-
-**Rules**:
-1. Only ONE agent owns a task at any time
-2. Check manifest before claiming
-3. Update task status history with agent-id
-4. Release ownership on completion or handoff
-
-**Claim Process**:
-```markdown
-1. Verify task status: Agreed or ReadyForHandoff
-2. Check manifest: No other owner
-3. Update task file status history
-4. Update manifest current task
-5. Log claim in activity
-```
-
----
-
-## 4. File Locking (MANDATORY)
-
-### Prevent Simultaneous Modifications
-
-**Before modifying ANY file**:
-
-```markdown
-1. Check docs/agents/locks.md
-2. If unlocked, add entry:
-   | [file] | [agent-id] | [timestamp] | [task] | [reason] |
-3. Commit locks.md
-4. Make changes
-5. Commit changes
-6. Remove lock entry
-7. Commit unlock
-```
-
-**If Locked**: Wait, coordinate via activity log, or choose different task
-
-**Auto-Release**: After 1 hour or on session end
-
----
-
-## 5. Handoff Protocol (MANDATORY)
-
-### When to Create Handoff
-
-- Task type changes (planning → implementation → testing)
-- Capability limitation encountered
-- Task reassigned to different agent
-- Session ending with incomplete work
-
-### Handoff Process
-
-**Initiating Agent**:
-```markdown
-1. Create docs/agents/handoffs/[task]-[from]-to-[to].md
-2. Use template from docs/agents/handoffs/_TEMPLATE.md
-3. Document: context, decisions, next steps, blockers
-4. Update task status: ReadyForHandoff
-5. Log handoff in activity
-6. Update manifest: task=none, status=idle
-7. Release all locks
-```
-
-**Receiving Agent**:
-```markdown
-1. Review handoff document thoroughly
-2. Log acceptance in activity
-3. Update task status: InProgress
-4. Update manifest: task=[task-id]
-5. Claim ownership
-```
-
----
-
-## 6. Capability-Based Routing
-
-### Assign Tasks to Best Agent
-
-| Task Type | Preferred | Fallback |
-|-----------|-----------|----------|
-| Planning/PRD | claude | human |
-| Architecture | claude | human |
-| Research | claude | human |
-| Implementation | cursor | claude |
-| Testing | cursor | claude |
-| Debugging | cursor | claude |
-| Documentation | claude | cursor |
-| Code Review | claude, cursor | human |
-
-**See**: `docs/agents/config/[agent-type].md` for detailed capabilities
-
----
-
-## 7. Status Synchronization
-
-### Keep Status Consistent
-
-**Update Both Locations**:
-1. Task file status history
-2. Task index (e.g., `docs/delivery/[pbi]/tasks.md`)
-
-**Include Agent ID**:
-```markdown
-| [timestamp] | Status Change | [from] | [to] | [agent-id]: [details] | [user] |
-```
-
-**Verify Before Work**:
-- Task file status = Task index status
-- If mismatch, reconcile before proceeding
-
----
-
-## 8. Conflict Resolution
-
-### When Conflicts Occur
-
-**Status Conflicts**: Last write wins (latest timestamp)  
-**File Conflicts**: Standard git resolution  
-**Task Claims**: Earlier timestamp wins  
-
-**Always**:
-1. Log conflict in activity
-2. Notify user
-3. Document resolution
-4. Update process to prevent recurrence
-
----
-
-## 9. Quality Standards
-
-### All Agents Must
-
-- Read existing code/docs before changes
-- Follow project conventions and patterns
-- Test before committing
-- Document changes appropriately
-- Clean up (remove dead code)
-- Respect task scope (no gold-plating)
-
-### Communication
-
-**With Users**: Clear, direct, ask when uncertain  
-**With Agents**: Via activity log, structured, specific  
-**Style**: Professional, helpful, honest
-
----
-
-## 10. Pre-Action Checklist
-
-**Before ANY work**:
-- [ ] Registered in manifest?
-- [ ] Session ID current?
-- [ ] Task available or handoff ready?
-- [ ] Files unlocked?
-- [ ] Intent logged?
-- [ ] Required capabilities?
-
-**Before ANY commit**:
-- [ ] Changes within task scope?
-- [ ] Status updated?
-- [ ] Activity logged?
-- [ ] Locks released?
-- [ ] No conflicts?
-- [ ] Tests pass (if code)?
-
----
-
-## Integration with Project
-
-**Precedence** (highest to lowest):
-1. Safety & Ethics
-2. Universal Agent Standard (this document)
-3. PROJECT_POLICY.md (project-specific rules)
-4. Agent-specific config (preferences)
-
-**Conflicts**: Higher precedence wins
-
-**Extensions**: Projects may add to UAS but not contradict core principles
+1. **Human Authority**: The human approves all plans and major decisions
+2. **One Task at a Time**: Focus on completing tasks, don't juggle
+3. **Stay in Scope**: Only do what the task requires
+4. **Document Changes**: Keep activity log current
+5. **Ask When Unsure**: Better to clarify than assume
 
 ---
 
 ## File Locations
 
 ```
-project-root/
-├── AGENTS.md (this file)
+project/
+├── MY_IDEA.md              # Human's initial idea
+├── AGENTS.md               # This file
 ├── docs/
-│   ├── PROJECT_POLICY.md
 │   ├── agents/
-│   │   ├── manifest.md
-│   │   ├── activity.md
-│   │   ├── locks.md
-│   │   ├── config/
-│   │   │   ├── claude.md
-│   │   │   └── cursor.md
-│   │   └── handoffs/
-│   │       └── _TEMPLATE.md
+│   │   ├── manifest.md     # Who's working on what
+│   │   ├── activity.md     # Work log
+│   │   └── handoffs/       # Work transfers
 │   └── delivery/
+│       ├── backlog.md      # All PBIs
 │       └── [PBI-ID]/
-│           ├── prd.md
-│           ├── tasks.md
-│           └── [task-files].md
-└── scripts/
-    └── agent-helpers.sh
+│           ├── prd.md      # Requirements
+│           └── tasks.md    # Task list
 ```
 
 ---
 
-## Quick Commands
+## Quick Reference
 
-**Register**:
-```bash
-source scripts/agent-helpers.sh
-agent_register [type] "[capabilities]"
-```
+**New project?** → Read MY_IDEA.md → Ask questions → Create PRD → Get approval
 
-**Log Activity**:
-```bash
-log_activity [agent-id] [action] [target] "[details]"
-```
+**Existing project?** → Register → Check handoffs → Claim task → Work → Log
 
-**Lock File**:
-```bash
-lock_file [file] [agent-id] [task] "[reason]"
-```
-
-**Unlock File**:
-```bash
-unlock_file [file]
-```
-
----
-
-## Emergency Procedures
-
-**Agent Interrupted**: Work left in InProgress, locks timeout after 1hr  
-**Corrupted State**: Stop, log with CRITICAL marker, notify user  
-**Lock Deadlock**: Newest waiter backs off, user notified if >30min
-
----
-
-## Version & Updates
-
-**Current Version**: 1.0.0
-
-**Updates**: Proposed via GitHub issue → User approval → Document updated → Agents notified
-
----
-
-**Remember**: This is the foundation for collaboration. When in doubt, over-communicate via activity log and ask the user.
-
-For detailed information, see:
-- Agent-specific configs: `docs/agents/config/`
-- Project-specific rules: `docs/PROJECT_POLICY.md`
-- Setup guide: `docs/IMPLEMENTATION_GUIDE.md`
+**Need help?** → Ask the human
