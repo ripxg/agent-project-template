@@ -75,7 +75,7 @@ Once you have clarity, create the project structure:
 
 **Step 4: Get Human Approval**
 
-Present the PRD and task list to the human. Wait for their approval before implementing.
+Present the PRD and task list to the human. PRD scope requires human approval before implementation begins.
 
 ---
 
@@ -87,6 +87,23 @@ The project has an established structure. Follow these steps:
 2. **Check for handoffs** in `docs/agents/handoffs/`
 3. **Review current work** in `docs/delivery/`
 4. **Claim a task** and start working
+
+---
+
+## Agent Roles
+
+| Role | Type | Responsibilities |
+|------|------|------------------|
+| **Planning Agent** | claude | Creates PRDs, architecture, research, documentation |
+| **Worker Agent** | cursor | Implementation, testing, debugging |
+| **Review Agent** | claude | Code review, quality verification, approves worker output |
+
+**Approval authority**:
+- PRD scope and final acceptance → Human
+- Task approval and implementation review → Planning or Review agent
+- Research and documentation → Self-approval with logging
+
+See `docs/PROJECT_POLICY.md` for detailed routing and approval flows.
 
 ---
 
@@ -123,11 +140,12 @@ Before doing any work, register in `docs/agents/manifest.md`:
 
 | Status | Meaning |
 |--------|---------|
-| Proposed | Defined, needs human approval |
+| Proposed | Defined, needs planning agent or human approval |
 | Agreed | Approved, ready to work on |
-| InProgress | Someone is actively working on it |
-| Review | Done, waiting for human to verify |
-| Done | Human approved it |
+| InProgress | Agent actively working |
+| ReadyForHandoff | Needs different agent type to continue |
+| Review | Done, awaiting review agent or human verification |
+| Done | Approved by review agent or human |
 | Blocked | Can't proceed, needs help |
 
 ### Completing a Task
@@ -136,15 +154,21 @@ Before doing any work, register in `docs/agents/manifest.md`:
 2. Update task status to `Review`
 3. Update manifest (set task to "none")
 4. Log completion in activity
-5. Wait for human approval → then mark `Done`
+5. Await approval from review agent or human → then mark `Done`
 
 ---
 
 ## Working with Multiple Agents
 
+### Parallel Work
+
+- Multiple agents CAN work on different PBIs simultaneously
+- One agent per PBI at a time (unless human approves parallel)
+- Always check manifest before claiming tasks
+
 ### Handoffs
 
-When you need to pass work to another agent (or another agent type):
+When you need to pass work to another agent type:
 
 1. Create `docs/agents/handoffs/[task]-to-[agent-type].md`:
    ```markdown
@@ -170,7 +194,7 @@ When you need to pass work to another agent (or another agent type):
 ### Receiving a Handoff
 
 1. Read the handoff document completely
-2. Claim the task (update manifest and task status)
+2. Claim the task (update manifest and status to InProgress)
 3. Log acceptance in activity
 4. Continue the work
 
@@ -192,6 +216,7 @@ Log significant actions in `docs/agents/activity.md`:
 - Session start/end
 - Task claimed/completed
 - Handoffs created/accepted
+- Approvals given (for review agents)
 - Blockers encountered
 - Significant decisions
 
@@ -199,11 +224,11 @@ Log significant actions in `docs/agents/activity.md`:
 
 ## Key Principles
 
-1. **Human Authority**: The human approves all plans and major decisions
-2. **One Task at a Time**: Focus on completing tasks, don't juggle
+1. **Task-Driven**: All work tied to approved tasks
+2. **One Task at a Time**: Focus on completion
 3. **Stay in Scope**: Only do what the task requires
 4. **Document Changes**: Keep activity log current
-5. **Ask When Unsure**: Better to clarify than assume
+5. **Coordinate**: Check manifest, use handoffs, log decisions
 
 ---
 
@@ -214,6 +239,7 @@ project/
 ├── MY_IDEA.md              # Human's initial idea
 ├── AGENTS.md               # This file
 ├── docs/
+│   ├── PROJECT_POLICY.md   # Detailed rules and workflows
 │   ├── agents/
 │   │   ├── manifest.md     # Who's working on what
 │   │   ├── activity.md     # Work log
@@ -229,8 +255,10 @@ project/
 
 ## Quick Reference
 
-**New project?** → Read MY_IDEA.md → Ask questions → Create PRD → Get approval
+**New project?** → Read MY_IDEA.md → Ask questions → Create PRD → Get human approval on scope
 
-**Existing project?** → Register → Check handoffs → Claim task → Work → Log
+**Existing project?** → Register → Check handoffs → Claim task → Work → Log → Submit for review
 
-**Need help?** → Ask the human
+**Need approval?** → Worker tasks: review agent. PRD scope: human.
+
+**For detailed workflows** → See `docs/PROJECT_POLICY.md`
